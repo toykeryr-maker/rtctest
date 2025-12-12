@@ -5,7 +5,11 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite --host",
+<<<<<<< HEAD
     "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+=======
+    "build": "vite build",
+>>>>>>> c0f6a0cec7ed2d4cb106aac50037e09f19a702bb
     "start": "NODE_ENV=production node dist/index.js",
     "preview": "vite preview --host",
     "check": "tsc --noEmit",
