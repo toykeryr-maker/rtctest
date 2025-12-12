@@ -1,33 +1,22 @@
+// server/index.ts  ← ไฟล์นี้ต้องอยู่ที่ root หรือในโฟลเดอร์ api ก็ได้
 import express from "express";
-import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-async function startServer() {
-  const app = express();
-  const server = createServer(app);
+const app = express();
 
-  // Serve static files from dist/public in production
-  const staticPath =
-    process.env.NODE_ENV === "production"
-      ? path.resolve(__dirname, "public")
-      : path.resolve(__dirname, "..", "dist", "public");
+// กำหนด path ที่ถูกต้องสำหรับ Vercel (สำคัญมาก!)
+const publicPath = path.join(__dirname, "../public"); // หรือ "../dist/public" ดูข้อ 3
 
-  app.use(express.static(staticPath));
+app.use(express.static(publicPath));
 
-  // Handle client-side routing - serve index.html for all routes
-  app.get("*", (_req, res) => {
-    res.sendFile(path.join(staticPath, "index.html"));
-  });
+// สำหรับ SPA (React, Next.js, Vite ฯลฯ) ที่ใช้ client-side routing
+app.get("*", (req, res) => {
+  res.sendFile(path.join(publicPath, "index.html"));
+});
 
-  const port = process.env.PORT || 3000;
-
-  server.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}/`);
-  });
-}
-
-startServer().catch(console.error);
+// สำคัญที่สุด: ต้อง export แบบนี้เท่านั้น Vercel ถึงจะรันได้
+export default app;
